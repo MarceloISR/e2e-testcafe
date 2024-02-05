@@ -1,0 +1,134 @@
+{
+	// Place your davinci-e2e-testcafe workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"New Scenario": {
+		"scope": "javascript,typescript",
+		"prefix": "nsc",
+		"body": [
+			"/*************** IMPORTS ***************/",
+			"import { InventoryAdjustment_Status } from '../src/api-folder/inventory';",
+			"import { Item_UOMType } from '../src/api-folder/itemSKUS';",
+			"import { UniqueValue, scenario } from '../src/utils';",
+
+			"\n",
+			"/*************** CONSTANS & VARIABLES ***************/",
+			"const variables = { ",
+				"const uniqueVal = UniqueValue(),",
+				"const warehouse =  `Warehouse-${ uniqueVal }`,",
+				"const itemCode = `item1-${ uniqueVal }`,",
+				"const account = `Account1-${ uniqueVal }`,",
+				"const storage1 = `Storage1-${ uniqueVal }`,",
+				"const lpn1 = `LPN1-${ uniqueVal }`,",
+			"}"
+			"\n",
+			"/*************** SCENARIO DEFINITION ***************/",
+			"export const scenario: scenario = {",
+				"\twarehouse: {",
+					"\t\tdescription: variables.warehouse",
+				"\t},",
+
+				"\tbusinessPartners: [",
+					"\t\t{ // 1st Business Partner",
+						"\t\t\tVendor: account,",
+						"\t\t\tDescription: variables.account,",
+					"\t\t}",
+				"\t],",
+
+				"\tstorageLocations: {",
+					"\t\tLocations:[",
+						"\t\t\t{ // 1st Location",
+							"\t\t\t\tDescription: variables.storage1,",
+							"\t\t\t\tHeight: 99999,",
+							"\t\t\t\tLength: 99999,",
+							"\t\t\t\tMaxLPN: 99999,",
+							"\t\t\t\tMaxWeight: 999999,",
+							"\t\t\t\tWidth: 99999,",
+						"\t\t\t}",
+					"\t\t]",
+				"\t},",
+				"\titems: [",
+					"\t\t{ // 1st Item",
+						"\t\t\tItemCode : variables.itemCode, ",
+						"\t\t\tVendor: variables.account,",
+						"\t\t\tEnabled: true,",
+						"\t\t\tUOM_type: Item_UOMType.Each",
+					"\t\t},",
+					"\t\t{ // 2nd Item",
+						"\t\t\tItemCode : variables.itemCode, ",
+						"\t\t\tVendor: variables.account,",
+						"\t\t\tEnabled: true,",
+						"\t\t\tUOM_type: Item_UOMType.Case",
+					"\t\t},",
+				"\t],",
+				"\tinventoryAdjustment: {",
+					"\t\titemAdjustment: [",
+						"\t\t\t{",
+							"\t\t\t\titemCode: variables.itemCode,",
+							"\t\t\t\tlpn: variables.lpn1,",
+							"\t\t\t\tqty: 100,",
+							"\t\t\t\tstatus: InventoryAdjustment_Status.available,",
+							"\t\t\t\tstorageIdentifier: variables.storage1,",
+
+						"\t\t\t}",
+					"\t\t]",
+				"\t},",
+			"}",
+			"\n",
+			"/*************** EXPORT SCENARIO *****************/",
+			"export const Scenario = {",
+				"Scenario: scenario,",
+				"Variable: variables",
+			"}"
+		],
+		"description": "Create a template for a new Scenario"
+	},
+
+	"New Test": {
+		"scope": "javascript,typescript",
+		"prefix": "tst",
+		"body": [
+			"import { Login, Menu } from '../../src/DVU';",
+			"import { Init } from \"../../src/utils\";",
+			"\n",
+
+
+			"fixture(`Fixture tests`) .meta({fixtureType: 'fixture Type'})",
+
+			".beforeEach(async t=>{",
+
+			"\tawait Init.Load({ ",
+			"\t\tCredentialGroup: 'Trial',",
+			"\t\t});",
+			"\t})",
+			"\n",
+			"test",
+				"\t.meta( {testType: 'testType', group:'testGroup', area: 'TestArea', parallel: false}) ",
+				"\t('Test Nae', async t =>{",
+
+				"\t\t/** VARIABLES  */",
+				"\t\tconst account = 'Automatic Allocation';",
+
+				"\t\t// write email, password and select warehouse",
+				"\t\tawait Login.LoginIn();",
+
+
+			"});"
+		],
+		"description": "Test template"
+	}
+}

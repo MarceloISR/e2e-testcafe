@@ -1,0 +1,8 @@
+{ 
+    "src": "tests/Putaway/LeastOccupied/*.ts", 
+    "browsers": ["chrome", "firefox"], 
+    "baseUrl": "https://trial.wdgcorp.com",
+    "skipJsErrors": true,
+    "reporter": "spec"
+
+}

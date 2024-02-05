@@ -1,0 +1,28 @@
+image: testcafe/testcafe
+
+definitions:
+  services:
+    docker:
+      memory: 3072
+    postgres:
+      image: postgres
+      variables:
+        POSTGRES_DB: 'dbQA'
+        POSTGRES_USER: 'admin'
+        POSTGRES_PASSWORD: 'admin'
+
+pipelines:
+  branches:
+    feature/PD-726*:
+      - step:
+          name: smoke testing
+          script:
+            - npm ci
+            - export TEST_URL=${TEST_URL}
+            - export TEST_USR=${TEST_USR}
+            - export TEST_PSS=${TEST_PSS}
+            - export TEST_DB=${TEST_DB}
+            - export TEST_CLIENT_V=${TEST_CLIENT_V}
+            - export TEST_API_V=${TEST_API_V}
+            - /opt/testcafe/docker/testcafe-docker.sh 'chromium:headless --no-sandbox --disable-dev-shm-usage' tests/ --test-meta testType=smoke
+              
