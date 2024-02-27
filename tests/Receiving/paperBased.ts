@@ -1,5 +1,5 @@
 import { Scenario as PaperBase } from "../../scenarios/Receiving/Paper_based_without_LPNs";
-import { Dialogs, ItemInventory, Login, Menu, ReceivingOrders } from "../../src/DVU";
+import { Dialogs, ItemInventory, Login, Menu, ReceivingOrders } from "../../src/WHS";
 import { Init, UniqueValue } from "../../src/utils";
 
 
