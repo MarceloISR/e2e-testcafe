@@ -1,5 +1,5 @@
 import { Scenario as BarcodeScanning } from "../../scenarios/Receiving/BarcodeScanning_without_LPNs";
-import { BackEnd, Dialogs, ItemInventory, Login, Menu, ReceivingOrders } from "../../src/DVU";
+import { BackEnd, Dialogs, ItemInventory, Login, Menu, ReceivingOrders } from "../../src/WHS";
 import { Init, Keys, UniqueValue } from "../../src/utils";
 import { NJTelnet } from "../../src/utils/telnet";
 
