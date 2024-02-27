@@ -1,5 +1,5 @@
 import { Scenario as Putaway} from "../../../scenarios/Putaway/PutawayScenario";
-import { BackEnd, DVU, Login } from "../../../src/DVU";
+import { BackEnd, WHS, Login } from "../../../src/WHS";
 import { BarcodeScanning_PutawayStyle } from "../../../src/apiFolder/businessPartners";
 import { Init } from "../../../src/utils";
 import { NJTelnet } from "../../../src/utils/telnet";
@@ -52,66 +52,66 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
     await RFTelnet.Send("1"); //SUCCESS
     await RFTelnet.End()
 
-    await DVU.Menu.InventoryByLocation.GoTo();
-    await DVU.InventoryByLocation.Toolbar.Search.Click();
-    await DVU.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
-    await DVU.InventoryByLocation.SearchDialog.Search.Click();
+    await WHS.Menu.InventoryByLocation.GoTo();
+    await WHS.InventoryByLocation.Toolbar.Search.Click();
+    await WHS.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
+    await WHS.InventoryByLocation.SearchDialog.Search.Click();
 
     // 1.Verify there are 15 available qty in location 1 with Lot=WTH and Sublot=M
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'Lot Code', rowValue: 'WHT'},
         { rowTitle: 'Sublot Code', rowValue: 'M'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc01}
     )).eql('10', `the location ${Putaway.Variable.Loc1} should have an qty of 10 when Lot=WHT and SubLot=M`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 2.Verify there are 5 available qty in location 1 with Lot=BLK and Sublot=S
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'S'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc01}
     )).eql('5', `the location ${Putaway.Variable.Loc1} should have an qty of 5 when Lot=BLK and SubLot=S`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 3.Verify there are 12 available qty in location 2 with Lot=BLK and Sublot=S
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'S'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc02}
     )).eql('12', `the location ${Putaway.Variable.Loc2} should have an qty of 12 when Lot=BLK and SubLot=S`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 4.Verify there are 5 available qty in location 2 with Lot=BLK and Sublot=L
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'L'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc02}
     )).eql('5', `the location ${Putaway.Variable.Loc2} should have an qty of 5 when Lot=BLK and SubLot=L`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
 
 });
@@ -126,7 +126,7 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
     }
     await BackEnd.LoadAccount(updatedAccount!);
 
-    //Login into DVU
+    //Login into WHS
     await Login.LoginIn();
 
     //*******************RF BEGIN *****************/
@@ -166,67 +166,67 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
     //*******************RF END*****************/
 
     //Go to INventory by LPN
-    await DVU.Menu.InventoryByLocation.GoTo();
-    await DVU.InventoryByLocation.Toolbar.Search.Click();
+    await WHS.Menu.InventoryByLocation.GoTo();
+    await WHS.InventoryByLocation.Toolbar.Search.Click();
     //filter the Inventory by the accouant
-    await DVU.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
-    await DVU.InventoryByLocation.SearchDialog.Search.Click();
+    await WHS.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
+    await WHS.InventoryByLocation.SearchDialog.Search.Click();
 
     // 1.Verify there are 15 available qty in location 1 with Lot=WHT and Sublot=M
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'Lot Code', rowValue: 'WHT'},
         { rowTitle: 'Sublot Code', rowValue: 'M'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc01}
     )).eql('15', `the location ${Putaway.Variable.Loc1} should have an qty of 15 when Lot=WHT and SubLot=M`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 2.Verify there are 17 available qty in location 2 with Lot=BLK and Sublot=S
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'S'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc02}
     )).eql('17', `the location ${Putaway.Variable.Loc2} should have an qty of 17 when Lot=BLK and SubLot=S`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 3.Verify there are 3 available qty in location 2 with Lot=BLK and Sublot=L
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'L'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc02}
     )).eql('3', `the location ${Putaway.Variable.Loc2} should have an qty of 3 when Lot=BLK and SubLot=L`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 4.Verify there are 2 available qty in location 4 with Lot=BLK and Sublot=L
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc4},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'L'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc4},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc04}
     )).eql('2', `the location ${Putaway.Variable.Loc4} should have an qty of 2 when Lot=BLK and SubLot=L`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 });
 
 test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending', parallelizable: false } ) 
@@ -239,7 +239,7 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
     }
     await BackEnd.LoadAccount(updatedAccount!);
 
-    //Login into DVU
+    //Login into WHS
     await Login.LoginIn();
 
     //*******************RF BEGIN *****************/
@@ -279,53 +279,53 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
     //*******************RF END*****************/
 
     //Go to INventory by LPN
-    await DVU.Menu.InventoryByLocation.GoTo();
-    await DVU.InventoryByLocation.Toolbar.Search.Click();
+    await WHS.Menu.InventoryByLocation.GoTo();
+    await WHS.InventoryByLocation.Toolbar.Search.Click();
     //filter the Inventory by the accouant
-    await DVU.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
-    await DVU.InventoryByLocation.SearchDialog.Search.Click();
+    await WHS.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
+    await WHS.InventoryByLocation.SearchDialog.Search.Click();
 
     // 1.Verify there are 15 available qty in location 1 with Lot=WHT and Sublot=M
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'Lot Code', rowValue: 'WHT'},
         { rowTitle: 'Sublot Code', rowValue: 'M'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc01}
     )).eql('15', `the location ${Putaway.Variable.Loc1} should have an qty of 15 when Lot=WHT and SubLot=M`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 2.Verify there are 17 available qty in location 2 with Lot=BLK and Sublot=S
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'S'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc02}
     )).eql('17', `the location ${Putaway.Variable.Loc2} should have an qty of 17 when Lot=BLK and SubLot=S`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 
     // 3.Verify there are 20 available qty in location 4 with Lot=BLK and Sublot=L
-    await DVU.InventoryByLocation.Table.clickRowByQuery(
+    await WHS.InventoryByLocation.Table.clickRowByQuery(
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc4},
         { rowTitle: 'Lot Code', rowValue: 'BLK'},
         { rowTitle: 'Sublot Code', rowValue: 'L'}
     );
-    await DVU.InventoryByLocation.Toolbar.View.Click();
-    await t.expect(await DVU.InventoryByLocation.Detail.Table.getCellValue(
+    await WHS.InventoryByLocation.Toolbar.View.Click();
+    await t.expect(await WHS.InventoryByLocation.Detail.Table.getCellValue(
         { targed: 'Available'},
         { rowTitle: 'Location', rowValue: Putaway.Variable.Loc4},
         { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnLoc04}
     )).eql('20', `the location ${Putaway.Variable.Loc2} should have an qty of 20 when Lot=BLK and SubLot=L`);
-    await DVU.InventoryByLocation.Detail.CloseDialog.Click();
+    await WHS.InventoryByLocation.Detail.CloseDialog.Click();
 });
 
 test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending', parallelizable: false } ) 
@@ -337,7 +337,7 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         }
         await BackEnd.LoadAccount(updatedAccount!);
 
-        //Login into DVU
+        //Login into WHS
         await Login.LoginIn();
 
         //*******************RF BEGIN *****************/
@@ -376,14 +376,14 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         await RFTelnet.End();
 
         //got to inventory by location tab
-        await DVU.Menu.InventoryByLocation.GoTo();
+        await WHS.Menu.InventoryByLocation.GoTo();
         //search the inventory by the account
-        await DVU.InventoryByLocation.Toolbar.Search.Click();
-        await DVU.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
-        await DVU.InventoryByLocation.SearchDialog.Search.Click();
+        await WHS.InventoryByLocation.Toolbar.Search.Click();
+        await WHS.InventoryByLocation.SearchDialog.Account.Find.Search(Putaway.Variable.account);
+        await WHS.InventoryByLocation.SearchDialog.Search.Click();
 
         //Verify Empty5 location has available qty=10 of lot=WHT and sublot=M
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy5},
             { rowTitle: 'Lot Code', rowValue: 'WHT'},
@@ -391,7 +391,7 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         )).eql('10', 'the location '+Putaway.Variable.Emtpy5+' should have a qty of 10 items with lot = WHT and sublot = M');
         
         //Verify Empty6 location has available qty=10 of lot=BLK and sublot=L
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy6},
             { rowTitle: 'Lot Code', rowValue: 'BLK'},
@@ -399,7 +399,7 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         )).eql('5', 'the location '+Putaway.Variable.Emtpy6+' should have a qty of 5 items wit lot = BLK and sublot L');
 
         //Verify Empty5 location has available qty=10 of lot=BLK and sublot=S
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy6},
             { rowTitle: 'Lot Code', rowValue: 'BLK'},
@@ -407,25 +407,25 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         )).eql('10', 'the location '+Putaway.Variable.Emtpy6+' should have a qty of 10 items wit lot=BLK and sublot=S');
     
         //Verify Location1 location has available qty=5 of lot=BLK and sublot=S
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Loc1}
         )).eql('5', 'the location '+Putaway.Variable.Loc1+' should have a qty of 5 items wit lot=WHT and sublot=M');
     
         //Verify Location2 location has available qty=7 of lot=BLK and sublot=S
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Loc2}
         )).eql('7', 'the location '+Putaway.Variable.Loc2+' should have a qty of 7 items wit lot=BLK and sublot=S');
         
         //Verify Location3 location has available qty=15 of lot=WHT and sublot=L
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Loc3}
         )).eql('15', 'the location '+Putaway.Variable.Loc3+' should have a qty of 15 items wit lot=WHT and sublot=L');
 
         //Verify Location4 location has available qty=15 of lot=BLK and sublot=L
-        await t.expect(await DVU.InventoryByLocation.Table.getCellValue(
+        await t.expect(await WHS.InventoryByLocation.Table.getCellValue(
             { targed: 'Available Qty'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Loc4}
         )).eql('15', 'the location '+Putaway.Variable.Loc4+' should have a qty of 15 items wit lot=BLK and sublot=L');
@@ -440,7 +440,7 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         }
         await BackEnd.LoadAccount(updatedAccount!);
 
-        //Login into DVU
+        //Login into WHS
         await Login.LoginIn();
 
         //*******************RF BEGIN *****************/
@@ -479,51 +479,51 @@ test.meta( { testType: 'regression', group: 'putaway', area: 'location Ascending
         await RFTelnet.End();
 
         //got to inventory by location tab
-        await DVU.Menu.ItemInventory.GoTo();
+        await WHS.Menu.ItemInventory.GoTo();
         //search the inventory by the account
-        await DVU.ItemInventory.Toolbar.Search.Click();
-        await DVU.ItemInventory.SearchDialog.Account.Find.Search(Putaway.Variable.account);
-        await DVU.ItemInventory.SearchDialog.Search.Click();
+        await WHS.ItemInventory.Toolbar.Search.Click();
+        await WHS.ItemInventory.SearchDialog.Account.Find.Search(Putaway.Variable.account);
+        await WHS.ItemInventory.SearchDialog.Search.Click();
     
         // Verify that the Item with lot=BLK and Sublot=L exist in the location Loc3 with available qty=5
-        await DVU.ItemInventory.Table.clickRowByQuery(
+        await WHS.ItemInventory.Table.clickRowByQuery(
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy5},
             { rowTitle: 'Lot Code', rowValue: Putaway.Variable.lotWHT},
             { rowTitle: 'Sublot Code', rowValue: Putaway.Variable.sublotM}
         );
-        await DVU.ItemInventory.Toolbar.View.Click();
-        await t.expect(await DVU.ItemInventory.Detail.Table.getCellValue(
+        await WHS.ItemInventory.Toolbar.View.Click();
+        await t.expect(await WHS.ItemInventory.Detail.Table.getCellValue(
             { targed: 'Available'},
             { rowTitle: 'LPN', rowValue: ''},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy5},
         )).eql('10', 'Location='+Putaway.Variable.Emtpy5 + '  and no LPN should have an available qty of 10');
-        await DVU.ItemInventory.Detail.CloseDialog.Click();
+        await WHS.ItemInventory.Detail.CloseDialog.Click();
 
         //Verify that the Item with lote=BLK and Sublot=S exist in the location EMpty6 with available qty= 10
-        await DVU.ItemInventory.Table.clickRowByQuery(
+        await WHS.ItemInventory.Table.clickRowByQuery(
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy6},
             { rowTitle: 'Lot Code', rowValue: 'BLK'},
             { rowTitle: 'Sublot Code', rowValue: 'S'}
         );
-        await DVU.ItemInventory.Toolbar.View.Click();
-        await t.expect(await DVU.ItemInventory.Detail.Table.getCellValue(
+        await WHS.ItemInventory.Toolbar.View.Click();
+        await t.expect(await WHS.ItemInventory.Detail.Table.getCellValue(
             { targed: 'Available'},
             { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnRCV00},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Emtpy6},
         )).eql('10', 'Location='+Putaway.Variable.Emtpy6 + '  and LPN=PA-RCV-00 should have an available qty of 10');
-        await DVU.ItemInventory.Detail.CloseDialog.Click();
+        await WHS.ItemInventory.Detail.CloseDialog.Click();
 
         //Verify that the Item with lote=BLK and Sublot=L exist in the location Location3 with available qty= 5
-        await DVU.ItemInventory.Table.clickRowByQuery(
+        await WHS.ItemInventory.Table.clickRowByQuery(
             { rowTitle: 'Location', rowValue: Putaway.Variable.Loc3},
             { rowTitle: 'Lot Code', rowValue: 'BLK'},
             { rowTitle: 'Sublot Code', rowValue: 'L'}
         );
-        await DVU.ItemInventory.Toolbar.View.Click();
-        await t.expect(await DVU.ItemInventory.Detail.Table.getCellValue(
+        await WHS.ItemInventory.Toolbar.View.Click();
+        await t.expect(await WHS.ItemInventory.Detail.Table.getCellValue(
             { targed: 'Available'},
             { rowTitle: 'Location', rowValue: Putaway.Variable.Loc3},
             { rowTitle: 'LPN', rowValue: Putaway.Variable.lpnRCV01},
         )).eql('5', 'Location='+Putaway.Variable.Loc3 + '  should have an available qty of 5');
-        await DVU.ItemInventory.Detail.CloseDialog.Click();
+        await WHS.ItemInventory.Detail.CloseDialog.Click();
     })
