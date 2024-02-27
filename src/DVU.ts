@@ -30,7 +30,7 @@ class dialog{
 }
 
 
-class davinci{
+class whs{
 
     public Login : login;
     public Menu : menu;
@@ -148,40 +148,40 @@ export const SetAPICredentials = (credentialGroup: string | undefined, scenario:
 
 }
 
-export const DVU = new davinci();
+export const WHS = new whs();
 /**
- * DAVINCI: Login actions
+ * WHS: Login actions
  */
 export const Login = new login();
 
 /**
- * DAVINCI: Menú Options
+ * WHS: Menú Options
  */
 export const Menu = new menu();
 /**
- * DAVINCI: HomeHeader actions
+ * WHS: HomeHeader actions
  */
 export const HomeHeader = new homeHeader();
 /**
- * DAVINCI: Receiving orders actions
+ * WHS: Receiving orders actions
  */
 export const ReceivingOrders = new receivingOrders();
 /**
- * DAVINCI: Item Inventory actions
+ * WHS: Item Inventory actions
  */
 export const ItemInventory = new itemInventory();
 /**
- * DAVINCI: Dialgos actions
+ * WHS: Dialgos actions
  */
 export const Dialogs = new dialog();
 /**
- * DAVINCI: Item/SKUs actions
+ * WHS: Item/SKUs actions
  */
 export const ItemSKUs = new itemSKUS();
 
 
 /**
- * DAVINCI: BackEnd actions
+ * WHS: BackEnd actions
  */
 export const BackEnd = new backEnd();
 
