@@ -1,5 +1,5 @@
 import { Selector, t } from 'testcafe';
-import { DVU, Dialogs, HomeHeader, Login, Menu, WEB }  from '../../src/DVU';
+import { WHS, Dialogs, HomeHeader, Login, Menu, WEB }  from '../../src/WHS';
 import { StringOptions, Init } from '../../src/utils';
 
 fixture(`Smoke tests`)
