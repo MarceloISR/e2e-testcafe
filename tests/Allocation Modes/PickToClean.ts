@@ -1,5 +1,5 @@
 import { Scenario as PickToClean } from '../../scenarios/Allocation Mode/PickToCleanScenario';
-import { BackEnd, DVU, Login, TestArea, TestGroup, TestType } from '../../src/DVU';
+import { BackEnd, WHS, Login, TestArea, TestGroup, TestType } from '../../src/WHS';
 
 import { Init, Keys, UniqueValue } from "../../src/utils";
 import { NJTelnet } from '../../src/utils/telnet';
@@ -27,27 +27,27 @@ test
         // write email, password and select warehouse
         await Login.LoginIn();
         // go to shipping orders
-        await DVU.Menu.ShippingOrders.GoTo();
+        await WHS.Menu.ShippingOrders.GoTo();
 
         const createOrder =async (vendor, orderNumber, lineEntries : {oQty: number, sQty: number}[], itm) => {
-            await DVU.ShippingOrders.Toolbar.Insert.Click();
-            await DVU.ShippingOrders.CreateOrder.Account.Find.Search(vendor);
-            await DVU.ShippingOrders.CreateOrder.OrderNumber.SetText(orderNumber);
-            await DVU.ShippingOrders.CreateOrder.Save.Click();
+            await WHS.ShippingOrders.Toolbar.Insert.Click();
+            await WHS.ShippingOrders.CreateOrder.Account.Find.Search(vendor);
+            await WHS.ShippingOrders.CreateOrder.OrderNumber.SetText(orderNumber);
+            await WHS.ShippingOrders.CreateOrder.Save.Click();
 
-            await DVU.ShippingOrders.CreateOrder.SideMenu.LineEntries.Click();
+            await WHS.ShippingOrders.CreateOrder.SideMenu.LineEntries.Click();
 
             for( const line of lineEntries){
-                await DVU.ShippingOrders.CreateOrder.LineEntries.Toolbar.Insert.SelectByIndex(1);
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ItemCode.Search(itm);
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.OrderedQty.Increase(line.oQty);
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ShippedQty.Increase(line.sQty);
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.Insert.Click();
+                await WHS.ShippingOrders.CreateOrder.LineEntries.Toolbar.Insert.SelectByIndex(1);
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ItemCode.Search(itm);
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.OrderedQty.Increase(line.oQty);
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ShippedQty.Increase(line.sQty);
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.Insert.Click();
             }
-            await DVU.ShippingOrders.CreateOrder.SideMenu.General.Click();
-            await DVU.ShippingOrders.CreateOrder.Status.SelectByText('In Process');
-            await DVU.ShippingOrders.CreateOrder.Save.Click();
-            await DVU.ShippingOrders.CreateOrder.CloseDialog.Click()
+            await WHS.ShippingOrders.CreateOrder.SideMenu.General.Click();
+            await WHS.ShippingOrders.CreateOrder.Status.SelectByText('In Process');
+            await WHS.ShippingOrders.CreateOrder.Save.Click();
+            await WHS.ShippingOrders.CreateOrder.CloseDialog.Click()
         }
         
         const inventoryDetail =  await BackEnd.GetItemInventoryDetail(  { Warehouse: 'Barcode Scanning', Vendor: 'Allocation Account', Item: 'Item1' });
@@ -57,18 +57,18 @@ test
         await createOrder(PickToClean.Variable.Account, orderNumber2, [{oQty: 4, sQty: 4}, {oQty: 3, sQty: 3}], PickToClean.Variable.Item);
         
         // go to Item Inventory
-        await DVU.Menu.ItemInventory.GoTo();
+        await WHS.Menu.ItemInventory.GoTo();
         // filetr the item by the account
-        await DVU.ItemInventory.Toolbar.Search.Click();
-        await DVU.ItemInventory.SearchDialog.Account.SearchAndSelect(PickToClean.Variable.Account);
-        await DVU.ItemInventory.SearchDialog.Search.Click();
+        await WHS.ItemInventory.Toolbar.Search.Click();
+        await WHS.ItemInventory.SearchDialog.Account.SearchAndSelect(PickToClean.Variable.Account);
+        await WHS.ItemInventory.SearchDialog.Search.Click();
 
-        await DVU.ItemInventory.Table.clickRowByQuery( { rowTitle: 'Item Code', rowValue: PickToClean.Variable.Item } );
-        await DVU.ItemInventory.Toolbar.View.Click();
+        await WHS.ItemInventory.Table.clickRowByQuery( { rowTitle: 'Item Code', rowValue: PickToClean.Variable.Item } );
+        await WHS.ItemInventory.Toolbar.View.Click();
        
         // Verify that the Location1 and lpn1 has the correct qtys in Available and Allocated columns
         let allocated1 = inventoryDetail.find(x=>  x.storageLocation === PickToClean.Variable.Location1 && x.lpn===PickToClean.Variable.LPN1 )?.allocated ?? 0;
-        await t.expect(await DVU.ItemInventory.Detail.Table.existRowByQuery(
+        await t.expect(await WHS.ItemInventory.Detail.Table.existRowByQuery(
             { rowTitle:'Location', rowValue: PickToClean.Variable.Location1 },
             { rowTitle: 'LPN', rowValue: PickToClean.Variable.LPN1},
             { rowTitle: 'Available', rowValue: '0'},
@@ -77,7 +77,7 @@ test
 
         // Verify that the Location1 and lpn2 has the correct qtys in Available and Allocated columns
         let allocated2 = inventoryDetail.find(x=> x.storageLocation == PickToClean.Variable.Location1 && x.lpn==PickToClean.Variable.LPN2 )?.allocated ?? 0;
-        await t.expect(await DVU.ItemInventory.Detail.Table.existRowByQuery(
+        await t.expect(await WHS.ItemInventory.Detail.Table.existRowByQuery(
             { rowTitle:'Location', rowValue:PickToClean.Variable.Location1 },
             { rowTitle: 'LPN', rowValue: PickToClean.Variable.LPN2},
             { rowTitle: 'Available', rowValue:'20'},
@@ -86,7 +86,7 @@ test
 
         // Verify that the Location2 and lpn3 has the correct qtys in Available and Allocated columns
         let allocated3 = inventoryDetail.find(x=> x.storageLocation == PickToClean.Variable.Location2 && x.lpn==PickToClean.Variable.LPN3 )?.allocated ?? 0;
-        await t.expect(await DVU.ItemInventory.Detail.Table.existRowByQuery(
+        await t.expect(await WHS.ItemInventory.Detail.Table.existRowByQuery(
             { rowTitle:'Location', rowValue: PickToClean.Variable.Location2 },
             { rowTitle: 'LPN', rowValue: PickToClean.Variable.LPN3},
             { rowTitle: 'Available', rowValue:'0'},
@@ -95,7 +95,7 @@ test
 
         // Verify that the Location 2 and lpn4 has the correct qtys in Available and Allocated columns
         let allocated4 = inventoryDetail.find(x=> x.storageLocation == PickToClean.Variable.Location2 && x.lpn==PickToClean.Variable.LPN4 )?.allocated ?? 0;
-        await t.expect(await DVU.ItemInventory.Detail.Table.existRowByQuery(
+        await t.expect(await WHS.ItemInventory.Detail.Table.existRowByQuery(
             { rowTitle:'Location', rowValue: PickToClean.Variable.Location2 },
             { rowTitle: 'LPN', rowValue: PickToClean.Variable.LPN4},
             { rowTitle: 'Available', rowValue:'0'},
@@ -145,13 +145,13 @@ test
         await RFTelnet.End();   // end telnet session
 
         // Close the Detail view
-        await DVU.ItemInventory.Detail.CloseDialog.Click();
+        await WHS.ItemInventory.Detail.CloseDialog.Click();
         // Reopen the detail view with the updated data
-        await DVU.ItemInventory.Table.clickRowByQuery( { rowTitle: 'Item Code', rowValue: PickToClean.Variable.Item } );
-        await DVU.ItemInventory.Toolbar.View.Click();
+        await WHS.ItemInventory.Table.clickRowByQuery( { rowTitle: 'Item Code', rowValue: PickToClean.Variable.Item } );
+        await WHS.ItemInventory.Toolbar.View.Click();
         
         // Verify that the Location1 and lpn1 has the correct qtys in Available and Allocated columns
-        await t.expect(await DVU.ItemInventory.Detail.Table.existRowByQuery(
+        await t.expect(await WHS.ItemInventory.Detail.Table.existRowByQuery(
             { rowTitle:'Location', rowValue: PickToClean.Variable.Location1 },
             { rowTitle: 'LPN', rowValue: PickToClean.Variable.LPN2},
             { rowTitle: 'Available', rowValue:'20'},
@@ -191,33 +191,33 @@ test
         // write email, password and select warehouse
         await Login.LoginIn();
         // go to shipping orders
-        await DVU.Menu.ShippingOrders.GoTo();
+        await WHS.Menu.ShippingOrders.GoTo();
         
         const createOrder = async (vendor, orderNumber, lineEntries : {oQty: number}[], itm) : Promise<void> => {
-            await DVU.ShippingOrders.Toolbar.Insert.Click();
-            await DVU.ShippingOrders.CreateOrder.Account.Find.Search(vendor);
-            await DVU.ShippingOrders.CreateOrder.OrderNumber.SetText(orderNumber);
-            await DVU.ShippingOrders.CreateOrder.Save.Click();
+            await WHS.ShippingOrders.Toolbar.Insert.Click();
+            await WHS.ShippingOrders.CreateOrder.Account.Find.Search(vendor);
+            await WHS.ShippingOrders.CreateOrder.OrderNumber.SetText(orderNumber);
+            await WHS.ShippingOrders.CreateOrder.Save.Click();
             
-            await DVU.ShippingOrders.CreateOrder.SideMenu.LineEntries.Click();
+            await WHS.ShippingOrders.CreateOrder.SideMenu.LineEntries.Click();
             
             for( const line of lineEntries){
-                await DVU.ShippingOrders.CreateOrder.LineEntries.Toolbar.Insert.Click();
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ItemCode.Search(itm);
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.OrderedQty.Increase(line.oQty);
-                //await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ShippedQty.Increase(line.sQty);
-                await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.Insert.Click();
+                await WHS.ShippingOrders.CreateOrder.LineEntries.Toolbar.Insert.Click();
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ItemCode.Search(itm);
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.OrderedQty.Increase(line.oQty);
+                //await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ShippedQty.Increase(line.sQty);
+                await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.Insert.Click();
             }
-            await DVU.ShippingOrders.CreateOrder.SideMenu.General.Click();
-            await DVU.ShippingOrders.CreateOrder.Status.SelectByText('In Process');
-            await DVU.ShippingOrders.CreateOrder.Save.Click();
-            await DVU.ShippingOrders.CreateOrder.CloseDialog.Click()
+            await WHS.ShippingOrders.CreateOrder.SideMenu.General.Click();
+            await WHS.ShippingOrders.CreateOrder.Status.SelectByText('In Process');
+            await WHS.ShippingOrders.CreateOrder.Save.Click();
+            await WHS.ShippingOrders.CreateOrder.CloseDialog.Click()
         }
         // Create an order ( status in process ) with 1 entry line with Ordered qty = 10 and Shipped Qty = 10
         
         await createOrder(accountDescription, orderNumber1, [{oQty: 10}], item1);
         // Create an order ( status in process ) with 2 entry lines, 1st with ordered and shipped 1ty = 4 and 2nd line with ordered and shipped qty =3
-        // await DVU.ShippingOrders.Toolbar.Insert.Click();
+        // await WHS.ShippingOrders.Toolbar.Insert.Click();
         await createOrder(accountDescription, orderNumber2, [{oQty: 4}, {oQty: 3}], item1);
         
         const inventoryDetail =  await BackEnd.GetItemInventoryDetail(  { Warehouse: 'Barcode Scanning', Vendor: 'Allocation Account', Item: 'Item1' });
@@ -280,17 +280,17 @@ test
             await RFTelnet.End();   // end telnet session
 
         // go to Item Inventory
-        await DVU.Menu.ItemInventory.GoTo();
+        await WHS.Menu.ItemInventory.GoTo();
         // filetr the item by the account
-        await DVU.ItemInventory.Toolbar.Search.Click();
-        await DVU.ItemInventory.SearchDialog.Account.SearchAndSelect(accountDescription);
-        await DVU.ItemInventory.SearchDialog.Search.Click();
+        await WHS.ItemInventory.Toolbar.Search.Click();
+        await WHS.ItemInventory.SearchDialog.Account.SearchAndSelect(accountDescription);
+        await WHS.ItemInventory.SearchDialog.Search.Click();
 
-        await DVU.ItemInventory.Table.clickRowByQuery( { rowTitle: 'Item Code', rowValue: item1 } );
-        await DVU.ItemInventory.Toolbar.View.Click();
+        await WHS.ItemInventory.Table.clickRowByQuery( { rowTitle: 'Item Code', rowValue: item1 } );
+        await WHS.ItemInventory.Toolbar.View.Click();
         
         // Verify that the Location1 and lpn1 has the correct qtys in Available and Allocated columns
-        await t.expect(await DVU.ItemInventory.Detail.Table.existRowByQuery(
+        await t.expect(await WHS.ItemInventory.Detail.Table.existRowByQuery(
             { rowTitle:'Location', rowValue: location1 },
             { rowTitle: 'LPN', rowValue: LPN2},
             { rowTitle: 'Available', rowValue:'20'},
