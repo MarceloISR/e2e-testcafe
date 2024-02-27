@@ -1,4 +1,4 @@
-import { ItemInventory, ItemSKUs, Login, Menu } from "../../src/DVU";
+import { ItemInventory, ItemSKUs, Login, Menu } from "../../src/WHS";
 import { Init } from "../../src/utils";
 
 fixture(`API tests`) .meta({fixtureType: 'API'})
