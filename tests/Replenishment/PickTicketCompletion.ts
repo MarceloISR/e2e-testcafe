@@ -1,5 +1,5 @@
 import { Replenishment } from '../../scenarios/Replenishment/ReplenishmentScenario';
-import { BackEnd, DVU, Login, Menu } from '../../src/DVU';
+import { BackEnd, WHS, Login, Menu } from '../../src/WHS';
 import { Init, UniqueValue } from "../../src/utils";
 import { NJTelnet } from '../../src/utils/telnet';
 
@@ -32,49 +32,49 @@ test.meta( {testType: 'regression', group:'replenishment', area: 'on completion'
         await Login.LoginIn();
 
         //go to Shipping Orders
-        await DVU.Menu.ShippingOrders.GoTo();
+        await WHS.Menu.ShippingOrders.GoTo();
         //Create a new Shipping order
-        await DVU.ShippingOrders.Toolbar.Insert.Click();
+        await WHS.ShippingOrders.Toolbar.Insert.Click();
         //select Account
-        await DVU.ShippingOrders.CreateOrder.Account.Find.Search(Replenishment.Variables.account);
+        await WHS.ShippingOrders.CreateOrder.Account.Find.Search(Replenishment.Variables.account);
         //set a Order Number
-        await DVU.ShippingOrders.CreateOrder.OrderNumber.SetText(orderNumber);
+        await WHS.ShippingOrders.CreateOrder.OrderNumber.SetText(orderNumber);
         //Save order
-        await DVU.ShippingOrders.CreateOrder.Save.Click();
+        await WHS.ShippingOrders.CreateOrder.Save.Click();
 
 
         //Go to Line Entries
-        await DVU.ShippingOrders.CreateOrder.SideMenu.LineEntries.Click();
+        await WHS.ShippingOrders.CreateOrder.SideMenu.LineEntries.Click();
         //Insert a new Line
-        await DVU.ShippingOrders.CreateOrder.LineEntries.Toolbar.Insert.Click();
+        await WHS.ShippingOrders.CreateOrder.LineEntries.Toolbar.Insert.Click();
         //Search the Item and select the one with Eaches
-        await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ItemCode.Search(Replenishment.Variables.itemCode, Replenishment.Variables.itemCode+' EA');
+        await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.ItemCode.Search(Replenishment.Variables.itemCode, Replenishment.Variables.itemCode+' EA');
         //Select LotCode
-        await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.LotCode.SetText('A');
+        await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.LotCode.SetText('A');
         //Select Sublot Code
-        await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.SublotCode.SetText('1');
+        await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.SublotCode.SetText('1');
         //set Ordered QTY
-        await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.OrderedQty.Increase(10);
+        await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.OrderedQty.Increase(10);
         //Insert the line intry
-        await DVU.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.Insert.Click();
+        await WHS.ShippingOrders.CreateOrder.LineEntries.GeneralPanel.Insert.Click();
         //Save the Order
-        await DVU.ShippingOrders.CreateOrder.Save.Click();
+        await WHS.ShippingOrders.CreateOrder.Save.Click();
 
         //Go to general view
-        await DVU.ShippingOrders.CreateOrder.SideMenu.General.Click();
+        await WHS.ShippingOrders.CreateOrder.SideMenu.General.Click();
         //Change status to In Process
-        await DVU.ShippingOrders.CreateOrder.Status.SelectByText('In Process');
+        await WHS.ShippingOrders.CreateOrder.Status.SelectByText('In Process');
         //Save Order
-        await DVU.ShippingOrders.CreateOrder.Save.Click();
+        await WHS.ShippingOrders.CreateOrder.Save.Click();
         //Close dialog
-        await DVU.ShippingOrders.CreateOrder.CloseDialog.Click();
+        await WHS.ShippingOrders.CreateOrder.CloseDialog.Click();
 
         //Go to Work Orders Tab
-        await DVU.Menu.WorkOrders.GoTo();
+        await WHS.Menu.WorkOrders.GoTo();
         //Refresh the table
-        await DVU.WorkOrders.Toolbar.Refresh.Click();
+        await WHS.WorkOrders.Toolbar.Refresh.Click();
         //Verify that there is no new Order created
-        await t.expect(await DVU.WorkOrders.Table.getRowCounts()).eql(0, 'there is no new WorkOrder when the pick ticket is created');
+        await t.expect(await WHS.WorkOrders.Table.getRowCounts()).eql(0, 'there is no new WorkOrder when the pick ticket is created');
 
         // Complete the pick ticket through RF
         const RFTelnet = new NJTelnet(); 
@@ -95,9 +95,9 @@ test.meta( {testType: 'regression', group:'replenishment', area: 'on completion'
         await RFTelnet.End();   // end telnet session
 
         //Refres work orders table
-        await DVU.WorkOrders.Toolbar.Refresh.Click();
+        await WHS.WorkOrders.Toolbar.Refresh.Click();
         //Verify that a new Work Order is created when
-        await t.expect(await DVU.WorkOrders.Table.getRowCounts()).eql(1, 'there is no new WorkOrder when the pick ticket is completed');
+        await t.expect(await WHS.WorkOrders.Table.getRowCounts()).eql(1, 'there is no new WorkOrder when the pick ticket is completed');
 
         // Complete the Work Order through RF
         await RFTelnet.Connect(); //Init telnet conection
@@ -116,20 +116,20 @@ test.meta( {testType: 'regression', group:'replenishment', area: 'on completion'
         await RFTelnet.End();   // end telnet session
 
         //go to Item Inventory tab
-        await DVU.Menu.ItemInventory.GoTo();
-        await DVU.ItemInventory.Toolbar.Search.Click();
+        await WHS.Menu.ItemInventory.GoTo();
+        await WHS.ItemInventory.Toolbar.Search.Click();
         //Filter order by account
-        await DVU.ItemInventory.SearchDialog.Account.Find.Search(Replenishment.Variables.account);
-        await DVU.ItemInventory.SearchDialog.Search.Click();
+        await WHS.ItemInventory.SearchDialog.Account.Find.Search(Replenishment.Variables.account);
+        await WHS.ItemInventory.SearchDialog.Search.Click();
         //Verify the Eaches inventory is the expected one
-        await t.expect(await DVU.ItemInventory.Table.getCellValue(
+        await t.expect(await WHS.ItemInventory.Table.getCellValue(
             {targed: 'Available Qty'},
             {rowTitle: 'Item Code', rowValue: 'ItemRep'},
             {rowTitle: 'UOM', rowValue: 'EA'}
         )).eql('55', 'The replenishment didn\'t relocate the correct amount. Expeacted value = 55');
 
         //Verify that Item Cases inventory is the expected one
-        await t.expect(await DVU.ItemInventory.Table.getCellValue(
+        await t.expect(await WHS.ItemInventory.Table.getCellValue(
             {targed: 'Available Qty'},
             {rowTitle: 'Item Code', rowValue: 'ItemRep'},
             {rowTitle: 'UOM', rowValue: 'CS:5'}
